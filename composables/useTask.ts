@@ -1,18 +1,19 @@
 import {onMounted} from "vue";
+import {$fetch} from "ofetch";
 
 export const useTask = () => {
   const taskList = useState<TaskItemType[]>('taskList', () => [])
   const TASK_KEY = 'tasks'
 
   onMounted(() => {
-    taskList.value = localStorage.getItem(TASK_KEY)
-      ? JSON.parse(localStorage.getItem(TASK_KEY) as string)
-      : []
+    $fetch('/api/tasks').then((response) => {
+      taskList.value = response.data;
+      console.log(response.data)
+    })
   })
 
   const onDeleteTask = (id: string) => {
     taskList.value = taskList.value.filter((item) => item.id !== id)
-    updateLocalstorage()
   }
 
   const changeStatusTask = (id: string, status: TaskItemStatusType) => {
@@ -20,14 +21,13 @@ export const useTask = () => {
     if (!task) return
 
     task.status = status
-    updateLocalstorage()
   }
 
   const updateLocalstorage = () => {
     localStorage.setItem(TASK_KEY, JSON.stringify(taskList.value))
   }
 
-  const createOrUpdateTask = (taskObj: TaskItemType) => {
+  const createOrUpdateTask = async (taskObj: TaskItemType) => {
     if (!taskObj.name) return
 
     if (!taskObj.id) {
@@ -37,7 +37,11 @@ export const useTask = () => {
         id: new Date().getTime().toString(),
         createdAt: new Date()
       }
-      taskList.value = [newTask, ...taskList.value]
+      const response = await $fetch('/api/tasks/create', {
+        method: 'POST',
+        body: newTask
+      })
+      taskList.value = [response.data, ...taskList.value]
     } else {
       const index = taskList.value.findIndex((item) => item.id === taskObj.id)
       if (index !== -1) {
@@ -46,12 +50,10 @@ export const useTask = () => {
         }
       }
     }
-    updateLocalstorage()
   }
 
   const onClearTasks = () => {
     taskList.value = []
-    updateLocalstorage()
   }
 
 

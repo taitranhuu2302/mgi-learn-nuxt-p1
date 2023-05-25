@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed, reactive, ref} from 'vue'
 import {useTask} from "~/composables/useTask";
+import {$fetch} from "ofetch";
 
 type ActiveTabType = 'All' | 'Pending' | 'Completed'
 
