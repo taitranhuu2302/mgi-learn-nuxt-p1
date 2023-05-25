@@ -26,7 +26,7 @@ const onChangeStatusTask = (status: TaskItemStatusType) => {
       >{{ task.name }}</span
       >
     </div>
-    <div class="relative" @click-outside="() => (isOpenDropdown = false)">
+    <div class="relative" v-click-outside="() => (isOpenDropdown = false)">
       <button @click="isOpenDropdown = !isOpenDropdown">
         <Icon name="mdi:dots-vertical" size="25px"/>
       </button>
