@@ -1,4 +1,4 @@
-import {onMounted, Ref} from "vue";
+import {onMounted} from "vue";
 
 export const useTask = () => {
   const taskList = useState<TaskItemType[]>('taskList', () => [])
@@ -20,7 +20,7 @@ export const useTask = () => {
     if (!task) return
 
     task.status = status
-    localStorage.setItem(TASK_KEY, JSON.stringify(taskList.value))
+    updateLocalstorage()
   }
 
   const updateLocalstorage = () => {
@@ -46,7 +46,6 @@ export const useTask = () => {
         }
       }
     }
-    // resetTask()
     updateLocalstorage()
   }
 

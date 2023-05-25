@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, reactive, ref} from 'vue'
+import {computed, reactive, ref} from 'vue'
 import {useTask} from "~/composables/useTask";
 
 type ActiveTabType = 'All' | 'Pending' | 'Completed'
@@ -11,7 +11,7 @@ const taskObj = reactive<TaskItemType>({
   name: '',
   status: 'PENDING'
 })
-const {taskList, createOrUpdateTask, onClearTasks, onDeleteTask, changeStatusTask} = useTask()
+const {taskList, createOrUpdateTask, onClearTasks} = useTask()
 const isTaskTyping = computed(() => !!taskObj.name)
 const keyword = ref<string>('')
 const sortType = ref<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
@@ -96,9 +96,7 @@ const checkActiveTab = (type: ActiveTabType) => activeTabs.value === type
       <li v-if="!taskListFilter.length" class="text-lg">You don't have any task here</li>
       <template v-for="task in taskListFilter" :key="task.id">
         <task-item
-            @onDeleteTask="onDeleteTask"
             :task="task"
-            @changeStatusTask="changeStatusTask"
             @getEditTask="getEditTask"
         ></task-item>
       </template>

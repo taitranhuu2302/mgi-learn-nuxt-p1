@@ -4,19 +4,20 @@ import {ref} from 'vue'
 const {task} = defineProps<{
   task: TaskItemType
 }>()
-const emit = defineEmits(['changeStatusTask', 'onDeleteTask', 'getEditTask'])
+const emit = defineEmits(['getEditTask'])
 const isOpenDropdown = ref<boolean>(false)
+const {onDeleteTask, changeStatusTask} = useTask()
 
-const onChangeStatusTask = () => {
-  const status = task.status === 'PENDING' ? 'COMPLETED' : 'PENDING'
-  emit('changeStatusTask', task.id, status)
+const onChangeStatusTask = (status: TaskItemStatusType) => {
+  const newStatus = status === 'PENDING' ? 'COMPLETED' : 'PENDING'
+  changeStatusTask(task.id, newStatus)
 }
 
 </script>
 
 <template>
   <li class="task-item">
-    <div class="flex items-center gap-2.5 flex-grow" @click="onChangeStatusTask">
+    <div class="flex items-center gap-2.5 flex-grow" @click="onChangeStatusTask(task.status)">
       <Icon v-if="task.status === 'PENDING'" name="mdi:checkbox-blank-outline" size="25px"/>
       <Icon v-else name="mdi:checkbox-marked-outline" size="25px"/>
       <span
@@ -34,7 +35,7 @@ const onChangeStatusTask = () => {
           <NuxtLink :to="{ path: `/tasks/${task.id}` }">Detail</NuxtLink>
         </li>
         <li @click="emit('getEditTask', task)">Edit</li>
-        <li @click="emit('onDeleteTask', task.id)">Delete</li>
+        <li @click="onDeleteTask(task.id)">Delete</li>
       </ul>
     </div>
   </li>
